@@ -3,10 +3,6 @@ remote_theme: lorepirri/cayman-blog
 url: "intrigus.org"
 title: "Intrigus' Security Lab"
 
-plugins:
-  - jekyll-remote-theme
-  - jekyll-target-blank
-
 author: "intrigus"
 #excerpt_separator: <!--more-->
 
