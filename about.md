@@ -1,0 +1,9 @@
+---
+layout: page
+title: About
+ref: about
+order: 0
+---
+
+This is the website of _Intrigus' Security Lab_.\
+I want to share my knowledge about anything related to security like static analysis (especially {{ site.linkToCodeQlGithub}}), vulnerabilities I've found, fuzzing, and everything else.
