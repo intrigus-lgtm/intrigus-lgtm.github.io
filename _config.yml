@@ -1,1 +1,26 @@
 remote_theme: lorepirri/cayman-blog
+
+url: "intrigus.org"
+title: "Intrigus' Security Lab"
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-target-blank
+
+author: "intrigus"
+#excerpt_separator: <!--more-->
+
+github:
+  owner_name: "intrigus-lgtm"
+  owner_url: "https://github.com/intrigus-lgtm"
+
+twitter:
+  username: "intrigus_"
+
+header_page_refs: ["research", "advisories", "about", "contact"]
+
+linkToCodeQlGithub: "[CodeQL](https://github.com/github/codeql)"
+
+description: "A tiny contribution on securing the world's software"
+
+permalink: pretty
