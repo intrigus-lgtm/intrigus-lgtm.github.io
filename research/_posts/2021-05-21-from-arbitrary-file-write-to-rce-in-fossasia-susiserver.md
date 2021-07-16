@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "From Arbitrary File Write to RCE Using Git Hooks in fossasia/susi_server"
+excerpt: ""
 ---
 
 # From Arbitrary File Write to RCE Using Git Hooks in fossasia/susi_server
