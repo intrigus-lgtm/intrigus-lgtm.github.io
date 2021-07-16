@@ -10,6 +10,9 @@
 # Details
 {{ details }}
 
+## Impact
+{{ impact }}
+
 # CVE
 {% if page.cveNumbers.size > 0 %}
 {% for cveNumber in page.cveNumbers %}
