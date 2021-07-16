@@ -6,7 +6,7 @@ excerpt: ""
 
 # From Arbitrary File Write to RCE Using Git Hooks in fossasia/susi_server
 ## Introduction
-Some time ago I thought that it would be a fun idea to create a {{ site.linkToCodeQlGithub}} query that detects arbitrary(=user-controlled) file reads and writes in Java applications.\
+Some time ago I thought that it would be a fun idea to create a {{ site.linkToCodeQlGithub}} query that detects arbitrary (=user-controlled) file reads and writes in Java applications.\
 The query is sadly not yet production-ready but it already found some results.
 In this post I'm going to show you different vulnerabilities that I found in [fossasia/susi_server](https://github.com/fossasia/susi_server).\
 `susi_server` is the backend server for [SUSI.AI](https://susi.ai/):
