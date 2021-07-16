@@ -20,19 +20,19 @@ Here's an outline of what I'm going to show:
 
 (`susi_server` contains multiple arbitrary file reads, writes, renames, and directory listings and I can't cover all vulnerabilities. This [lgtm.com query](https://lgtm.com/query/7296233609860422014/) shows all instances where user-controlled values are used in paths.)
 
-<video preload="none" controls="controls" width="100%" aria-describedby="video-short-transcript" loop="loop">
+<video preload="none" controls="controls" style="width:100%" aria-describedby="video-short-transcript" loop="loop">
 {% for video in site.static_files %}
   {% if video.path contains 'assets/videos/isl-2020-001-fossasia_susi_server_git_hooks_rce_short_run.mp4' %}
-      <source type="video/mp4" src="{{ video.path }}"></source>
+      <source type="video/mp4" src="{{ video.path }}">
   {% endif %}
   {% if video.path contains 'assets/videos/isl-2020-001-fossasia_susi_server_git_hooks_rce_short_run.webm' %}
-      <source type="video/webm" src="{{ video.path }}"></source>
+      <source type="video/webm" src="{{ video.path }}">
   {% endif %}
 {% endfor %}
   <p>Your browser does not support the video element.</p>
 </video>
-<p id="video-short-transcript">
 <h4>Video Transcript/Description:</h4>
+<p id="video-short-transcript">
 The execution of the attack commands is shown in rapid succession, ending with a calculator that pops up.
 </p>
 
@@ -253,19 +253,19 @@ After about 60 seconds a calc pops up.
 
 # POC-Video - Detailed Explanation
 
-<video preload="none" controls="controls" width="100%" aria-describedby="video-transcript">
+<video preload="none" controls="controls" style="width:100%" aria-describedby="video-transcript">
 {% for video in site.static_files %}
   {% if video.path contains 'assets/videos/isl-2020-001-fossasia_susi_server_git_hooks_rce.mp4' %}
-      <source type="video/mp4" src="{{ video.path }}"></source>
+      <source type="video/mp4" src="{{ video.path }}">
   {% endif %}
   {% if video.path contains 'assets/videos/isl-2020-001-fossasia_susi_server_git_hooks_rce.webm' %}
-      <source type="video/webm" src="{{ video.path }}"></source>
+      <source type="video/webm" src="{{ video.path }}">
   {% endif %}
 {% endfor %}
   <p>Your browser does not support the video element.</p>
 </video>
-<p id="video-transcript">
 <h4>Video Transcript - Detailed Explanation:</h4>
+<p id="video-transcript">
 
 1. In a terminal `bin/start.sh` is executed inside the `susi_server` folder to start the server.
 
