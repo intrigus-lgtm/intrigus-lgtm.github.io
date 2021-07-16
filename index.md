@@ -24,4 +24,4 @@ This is my tiny contribution on securing the world's software by sharing my know
 
 My research posts can be found [here]({% link research.md %}).
 
-So far I have found **{{ numCves }}** CVEs, you can find the corresponding advisories [here]({% link advisories.md %}).
+So far I have found and published **{{ numCves }}** CVEs, you can find the corresponding advisories [here]({% link advisories.md %}).
