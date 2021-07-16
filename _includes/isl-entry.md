@@ -41,5 +41,5 @@ This issue was discovered and reported by [@intrigus-lgtm](https://github.com/in
 {% if contact %}
 {{ contact }}
 {% else %}
-You can contact the ISL at isl@intrigus.org. Please include a reference to `{{page.islNumber}}` in any communication regarding this issue.
+You can contact the ISL at `isl@intrigus.org`. Please include a reference to `{{page.islNumber}}` in any communication regarding this issue.
 {% endif %}
