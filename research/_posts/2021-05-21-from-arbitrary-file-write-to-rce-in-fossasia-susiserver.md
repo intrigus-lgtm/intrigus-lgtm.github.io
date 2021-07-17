@@ -32,7 +32,8 @@ Here's an outline of what I'm going to show:
 {% endfor %}
   <p>Your browser does not support the video element.</p>
 </video>
-<h4>Video Transcript/Description:</h4>
+
+#### Video Transcript/Description:
 <p id="video-short-transcript">
 The execution of the attack commands is shown in rapid succession, ending with a calculator that pops up.
 </p>
@@ -265,7 +266,8 @@ After about 60 seconds a calc pops up.
 {% endfor %}
   <p>Your browser does not support the video element.</p>
 </video>
-<h4>Video Transcript - Detailed Explanation:</h4>
+
+#### Video Transcript - Detailed Explanation:
 <p id="video-transcript">
 
 1. In a terminal `bin/start.sh` is executed inside the `susi_server` folder to start the server.
