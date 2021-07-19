@@ -1,5 +1,6 @@
 ---
 layout: isl-research-post
+title: "Announcing Intrigus' Security Lab"
 ---
 
 Welcome to Intrigus' Security Lab (ISL).
