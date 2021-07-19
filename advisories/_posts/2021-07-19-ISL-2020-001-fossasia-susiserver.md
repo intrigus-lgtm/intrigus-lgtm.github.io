@@ -3,7 +3,8 @@ layout: isl-entry
 cveNumbers: ["CVE-2020-4039"]
 islNumber: "ISL-2020-001"
 ghAdvisories: ["https://github.com/fossasia/susi_server/security/advisories/GHSA-wcm4-2jp5-q269"]
-excerpt: ""
+excerpt: "Insufficient input validation allowed a directory traversal vulnerability.
+Any admin config and file readable by the app can be retrieved by the attacker. Furthermore, some files can also be moved or deleted."
 title: "ISL-2020-001: Arbitrary File Read/Write in fossasia/susi_server Leading to RCE"
 ---
 

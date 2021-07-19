@@ -3,7 +3,9 @@ layout: isl-entry
 cveNumbers: ["CVE-2020-15097"]
 islNumber: "ISL-2020-002"
 ghAdvisories: ["https://github.com/loklak/loklak_server/security/advisories/GHSA-7557-4v29-rqw6"]
-excerpt: ""
+excerpt: "Insufficient input validation allowed a directory traversal vulnerability.
+Any admin config and file readable by the app can be retrieved by the attacker.
+Furthermore, user-controlled content could be written to any admin config and files readable by the application."
 title: "ISL-2020-002: Arbitrary File Read/Write in loklak/loklak_server"
 ---
 

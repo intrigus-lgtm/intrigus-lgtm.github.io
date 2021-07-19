@@ -1,7 +1,7 @@
 ---
 layout: isl-research-post
 title: "From Arbitrary File Write to RCE Using Git Hooks in fossasia/susi_server"
-excerpt: ""
+excerpt: "In this post I'll show how to achieve remote code execution using multiple smaller vulnerabilities."
 ---
 
 # From Arbitrary File Write to RCE Using Git Hooks in fossasia/susi_server
