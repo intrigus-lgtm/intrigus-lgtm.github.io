@@ -16,3 +16,5 @@ linkToCodeQlGithub: "[CodeQL](https://github.com/github/codeql)"
 description: "A tiny contribution on securing the world's software"
 
 permalink: pretty
+
+image: "assets/images/social-card-graphic.png"
