@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: isl-research-post
 ---
 
 Welcome to Intrigus' Security Lab (ISL).

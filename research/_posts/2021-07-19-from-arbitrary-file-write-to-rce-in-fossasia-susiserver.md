@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: isl-research-post
 title: "From Arbitrary File Write to RCE Using Git Hooks in fossasia/susi_server"
 excerpt: ""
 ---
