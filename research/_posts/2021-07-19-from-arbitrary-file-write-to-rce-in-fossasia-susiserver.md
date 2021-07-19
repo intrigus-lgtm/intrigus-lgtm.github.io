@@ -34,8 +34,9 @@ Here's an outline of what I'm going to show:
 </video>
 
 #### Video Transcript/Description:
-<div id="video-short-transcript">
+<div id="video-short-transcript" markdown="1">
 The execution of the attack commands is shown in rapid succession, ending with a calculator that pops up.
+A detailed explanation can be found [here](#video-transcript---detailed-explanation).
 </div>
 
 # Setup Instructions
@@ -268,6 +269,7 @@ After about 60 seconds a calc pops up.
 </video>
 
 #### Video Transcript - Detailed Explanation:
+{: #video-transcript---detailed-explanation }
 <div id="video-transcript" markdown="1">
 
 1. In a terminal `bin/start.sh` is executed inside the `susi_server` folder to start the server.
