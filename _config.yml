@@ -18,3 +18,7 @@ description: "A tiny contribution on securing the world's software"
 permalink: pretty
 
 image: "assets/images/social-card-graphic.png"
+
+plugins:
+  - jekyll-feed
+  
