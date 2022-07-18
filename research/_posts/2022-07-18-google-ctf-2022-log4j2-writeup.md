@@ -1,12 +1,13 @@
 ---
 layout: isl-research-post
 title: "Google CTF 2022 – LOG4J2 – Writeup"
+excerpt: "In this post I'm going to show how to solve LOG4J2 from Google CTF 2022 and also touch on why the unintended solution for LOG4J1 worked."
 ---
 
 # Google CTF 2022 – LOG4J2 – Writeup
 *TLDR: Side-channel-based timing attack via "format string" injection.* \
 218 points and 43 solves. \
-Flag: `CTF{and-you-thought-it-was-over-didnt-you}`
+Flag: `CTF{and-you-thought-it-was-over-didnt-you}`.
 
 For this challenge, we are given a Java "chatbot" application that uses Log4j 2.17.2 and a (Python) Flask-based web application that interfaces with the chatbot via command line.
 
@@ -94,7 +95,7 @@ Now that we know how to access the flag, how do we extract it? We only have acce
 ### Extracting the Flag
 While Log4j prints the value of the flag to the log, this output is redirected to standard error [^unintended_solution] and not standard out. The Flask application only sends back the standard output.
 
-[^unintended_solution]: The unintended solution to the first LOG4J challenge was `/${java:${env:FLAG}}`. This worked because the challenge authors assumed that *all* logging output would be directed to standard error, as defined in `log4j2.xml`. However, the unintended solution triggers an exception *inside* Log4j and is logged by the special `StatusLogger` instead[^log4j_status_logger_call], bypassing the configuration file. The `StatusLogger` then logs to standard output, which is captured, leading to the unintended solution.
+[^unintended_solution]: The unintended solution to the first (LOG4J1) challenge was `/${java:${env:FLAG}}`. This worked because the challenge authors (just as me) assumed that *all* logging output would be directed to standard error, as defined in `log4j2.xml`. However, the unintended solution triggers an exception *inside* Log4j and is logged by the special `StatusLogger` instead[^log4j_status_logger_call], bypassing the configuration file. The `StatusLogger` then logs to standard output, which is captured, leading to the unintended solution.
 
 [^log4j_status_logger_call]: As can be seen in the [StrSubstitutor.java](https://github.com/apache/logging-log4j2/blob/c1d2e6c5a273b0c145ce68193284a56a1da98f2a/log4j-core/src/main/java/org/apache/logging/log4j/core/lookup/StrSubstitutor.java#L1185) file.
 What we need to extract the flag is a *side-channel*:
@@ -150,7 +151,7 @@ As the ReDoS did not work when replacing text (and it was also pretty late at ni
 
 (The *intended* solution was a ReDoS attack and leaking the flag character by character by observing the timing differences. The regex was crafted in such a way that ReDoS would only fire when the guessed flag matches.)
 
-#### Working Attack Using Amplification
+#### (My Solution) Working Attack Using Amplification
 We can reuse parts of the [failing attack](#failed-attack): \
 `/%replace{${env:FLAG}}{CTF.R.*}{9999999}`
 
