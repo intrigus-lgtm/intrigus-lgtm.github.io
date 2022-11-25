@@ -1,0 +1,185 @@
+WEBVTT
+
+1
+00:00:00.000 --> 00:00:03.840
+Now I want to talk about something that is the
+coolest part of my job.
+
+2
+00:00:03.850 --> 00:00:08.490
+The security lab's mission is to build and
+inspire a community of hackers.
+
+3
+00:00:08.500 --> 00:00:13.910
+It's amazing to work with this community and it
+has been from day one of the job when my
+
+4
+00:00:13.910 --> 00:00:19.590
+colleague Kevin exploited a vulnerability in
+Apple's XNU to remotely shut down my phone.
+
+5
+00:00:20.270 --> 00:00:25.250
+Well by doing that, he inadvertently shut down
+all the Apple devices on the floor.
+
+6
+00:00:26.950 --> 00:00:32.430
+And my job is to distill all of this incredible
+collective security knowledge into this
+
+7
+00:00:32.430 --> 00:00:36.380
+feedback loop.
+Amplify it, scale it into actual security
+
+8
+00:00:36.380 --> 00:00:37.770
+results for everyone.
+
+9
+00:00:39.080 --> 00:00:45.620
+A fantastic example of this community feedback
+driven security is the story of Simon
+
+10
+00:00:45.630 --> 00:00:49.250
+Gerst.
+He had an idea as part of his university
+
+11
+00:00:49.250 --> 00:00:52.760
+studies that ended up helping thousands of
+organization.
+
+12
+00:00:53.680 --> 00:00:58.530
+Let me show you a video.
+Simon is studying cybersecurity in Germany.
+
+13
+00:00:59.190 --> 00:01:04.780
+He was reading a security blog post about an
+authentication bypass vulnerability in the NHS
+
+14
+00:01:04.780 --> 00:01:10.430
+covid 19 contact tracing app.
+This vulnerability is caused by an improper JWT
+
+15
+00:01:10.430 --> 00:01:12.320
+token signature verification.
+
+16
+00:01:13.000 --> 00:01:15.950
+He decided to code this pattern into a CodeQL
+query.
+
+17
+00:01:15.960 --> 00:01:20.650
+He proposed this query as a submission to our
+bounty program.
+
+18
+00:01:21.520 --> 00:01:28.180
+This query was merged into our open source
+repo and GitHub included it into our
+
+19
+00:01:28.180 --> 00:01:30.060
+standard CodeQL query suite.
+
+20
+00:01:31.650 --> 00:01:36.880
+So when the security lab was auditing GitHub's,
+open source dependencies,
+
+21
+00:01:36.890 --> 00:01:40.290
+we decided to run this query on DataHub.
+
+22
+00:01:40.830 --> 00:01:47.630
+DataHub is a popular open source database solution
+built by linkedin and with over 1900
+
+23
+00:01:47.630 --> 00:01:51.660
+forks on GitHub and more than five million
+pulls from docker hub.
+
+24
+00:01:52.410 --> 00:01:57.360
+And boom, this new query found an authentication
+bypass.
+
+25
+00:01:58.020 --> 00:02:04.080
+Our query result points to the faulty code with
+a detailed explanation and of the vulnerability
+
+26
+00:02:04.090 --> 00:02:08.310
+and remediation advice.
+So when we reported it to the DataHub team,
+
+27
+00:02:08.320 --> 00:02:15.110
+they were able to fix it quickly and they
+informed their downstream consumers with a GitHub
+
+28
+00:02:15.110 --> 00:02:16.290
+security advisory.
+
+29
+00:02:17.610 --> 00:02:24.030
+In the end what started as student research
+resulted in a fix that improved the security of
+
+30
+00:02:24.040 --> 00:02:29.690
+hundreds of organizations and projects who used
+DataHub and in an automated check that
+
+31
+00:02:29.690 --> 00:02:33.030
+protects thousands of Java open source projects
+for free.
+
+32
+00:02:34.840 --> 00:02:35.900
+Yeah.
+You can't believe it.
+
+33
+00:02:35.910 --> 00:02:42.800
+I know this is incredible, but but it's true
+
+34
+00:02:42.800 --> 00:02:47.100
+that's CodeQL for you.
+It's unique because it truly leverages the
+
+35
+00:02:47.100 --> 00:02:52.880
+power of community to drive security results at
+scale directly into the secure development life
+
+36
+00:02:52.880 --> 00:02:59.640
+cycles of maintainers and enterprises with each
+CodeQL community contribution hundreds of
+
+37
+00:02:59.640 --> 00:03:04.940
+thousands of projects across the GitHub
+ecosystem automatically become more secure.
+
+38
+00:03:04.950 --> 00:03:05.950
+Thank you.
+
