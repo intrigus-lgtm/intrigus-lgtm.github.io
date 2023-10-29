@@ -1,0 +1,79 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{circuitikz}
+\usetikzlibrary{shapes,fit,positioning}
+\begin{document}
+
+\tikzset{
+    between/.style args={#1 and #2}{
+         at = ($(#1)!0.5!(#2)$)
+    }
+}
+
+\begin{circuitikz}[circuitikz/bipoles/length=1cm, circuitikz/logic ports=ieee]
+    \draw
+
+    (0,2)   node (nand_1_top) [nand port]{}
+    (nand_1_top.out)  node (Y1)[anchor=south west]  {}
+
+    (0,1)   node (nand_1_bottom) [nand port]{}
+    (nand_1_bottom.out)  node (Y1)[anchor=south west]  {}
+
+    (1,0)   node (nand_2) [nand port]{}
+    (nand_2.out)  node (Y1)[anchor=south west]  {}
+
+    (2.75,1.5)   node (nand_3_middle) [nand port]{}
+    (nand_3_middle.out)  node (Y1)[anchor=south west]  {}
+    
+    (4.5,0.5)   node (nand_4_middle) [nand port]{}
+    (nand_4_middle.out)  node (Y1)[anchor=south west]  {}
+    
+    (7.25,0.5)   node (nand_5_middle) [nand port]{}
+    (nand_5_middle.out)  node (Y1)[anchor=south west]  {}
+    ;
+    
+    \node[between=nand_1_top.in 1 and nand_1_top.in 2, circ] (nand_1_top_in_circ) {};
+    \draw (nand_1_top.in 1) -- (nand_1_top_in_circ);
+    \draw (nand_1_top.in 2) -- (nand_1_top_in_circ);
+    \draw (nand_1_top_in_circ) -- ++(-1.0,0) node[circ](var10_circ){} -- ++(-.25,0) node[left](var10){\texttt{flag\_0\_1}};   
+    
+    \node[between=nand_1_bottom.in 1 and nand_1_bottom.in 2, circ] (nand_1_bottom_in_circ) {};
+    \draw (nand_1_bottom.in 1) -- (nand_1_bottom_in_circ);
+    \draw (nand_1_bottom.in 2) -- (nand_1_bottom_in_circ);
+    \draw (nand_1_bottom_in_circ) -- ++(-0.5,0) node[circ](var284_circ){} -- ++(-0.75,0) node[left](var284){\texttt{\_var284}};    
+
+    \draw (nand_1_top.out) -- ++(-0,0) node[circ](nand_1_top_out_circ){} node[right]{\texttt{\_var285}};
+    \draw (nand_1_top_out_circ) |- (nand_3_middle.in 1);
+
+    \draw (nand_1_bottom.out) -- ++(-0,0) node[circ](nand_1_bottom_out_circ){} node[right]{$\texttt{\_var286}$};
+    \draw (nand_1_bottom_out_circ) |- (nand_3_middle.in 2);
+
+    \draw (var284_circ) |- (nand_2.in 1);
+    \draw (var10_circ) |- (nand_2.in 2);
+    
+    \draw (nand_2.out) -- ++(-0,0) node[circ](nand_2_out_circ){} node[right]{\texttt{\_var288}};
+    \draw (nand_2_out_circ) |- (nand_4_middle.in 2);
+
+    \draw (nand_3_middle.out) -- ++(-0,0) node[circ](nand_3_middle_out_circ){} node[right]{\texttt{\_var287}};
+    \draw (nand_3_middle_out_circ) |- (nand_4_middle.in 1);
+
+    \draw (nand_4_middle.out) -- ++(-0,0) node[circ](nand_4_middle_out_circ){} node[right](var289){\texttt{\_var289}};
+
+    \draw (nand_5_middle.out) -- ++(-0,0) node[circ](nand_5_middle_out_circ){} node[right](var290){\texttt{\_var290}};
+    \draw (nand_4_middle_out_circ) |- (nand_5_middle.in 1);
+    \draw (nand_4_middle_out_circ) |- (nand_5_middle.in 2);
+
+    \node[fit=(nand_1_top) (var289.base) (nand_2) (var284) (var10)](xnor_base) {};
+    \draw (xnor_base.south) ++(-0,-0.5) node[](xnor_text){XNOR};
+    \node[line width=0.5mm, draw=red, dashed, fit=(xnor_base) (xnor_text)](xnor) {};
+    
+    \node[fit=(nand_1_top.north -| var289.base) (nand_2.south -| var289.base) (var290)](not_base) {};        
+    \draw (not_base.south) ++(-0,-0.5) node[](not_text){NOT};
+    \node[line width=0.5mm, draw=blue, dashed, fit=(not_base) (not_text) (var290)](not) {};
+    
+    \node[fit=(xnor) (not)] (xor_base) {};
+    \draw (xor_base.south) ++(-0,-0.5) node[](xor_text){XOR};
+    \node[line width=0.5mm, draw=green, dashed, fit=(xor_base) (xor_text)](xor) {};
+
+\end{circuitikz}
+
+\end{document}
