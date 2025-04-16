@@ -9,7 +9,7 @@ excerpt: "How to fix decompilation when everything looks ugly, because stack pro
 I was playing DEFCON CTF Quals 2025 with (KITCTF⊂Sauercloud) and I looked into the `callmerust` challenge.
 The actual challenge is not relevant for this post, but when opening the binary in Ghidra (or binja) [^ida], I was greeted with some very ugly decompilation output.
 
-[^ida]: Only IDA tracks the stack pointer correctly, but it has different issues with for example strings (see the binary in [godbolt](https://dogbolt.org/?id=2968ec50-148d-4fc8-b51e-5888de471e7d#BinaryNinja=593&Hex-Rays=454&Ghidra=619)).
+[^ida]: Only IDA tracks the stack pointer correctly, but it has different issues with for example strings (see the binary in [dogbolt](https://dogbolt.org/?id=2968ec50-148d-4fc8-b51e-5888de471e7d#BinaryNinja=593&Hex-Rays=454&Ghidra=619)).
 
 The decompilation output looks ugly, because Ghidra is unable to track the stack pointer correctly.
 This is because the binary is compiled with `-fstack-check` (or similar), which adds stack probing code to the binary.
