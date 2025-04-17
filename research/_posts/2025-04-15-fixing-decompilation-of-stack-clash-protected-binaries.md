@@ -113,9 +113,10 @@ The stack probing code looks like this:
 ```
 
 **Ghidra is likely unable to track the stack pointer correctly, because the stack pointer is moved in a loop.**
-(I have opened an issue on the Ghidra GitHub repository to report this issue[^ghidra_issue])
+(I have opened an issue on the Ghidra GitHub repository [^ghidra_issue] and Binary Ninja GitHub repository [^binja_issue])
 
 [^ghidra_issue]: [https://github.com/NationalSecurityAgency/ghidra/issues/8017](https://github.com/NationalSecurityAgency/ghidra/issues/8017)
+[^binja_issue]: [https://github.com/Vector35/binaryninja-api/issues/6659](https://github.com/Vector35/binaryninja-api/issues/6659)
 
 ## The Fix
 The fix for this issue is very simple. We just have to apply some manual analysis and patch a few instructions in the binary.
