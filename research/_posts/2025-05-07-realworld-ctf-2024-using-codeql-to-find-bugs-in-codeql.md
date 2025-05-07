@@ -12,7 +12,7 @@ Flag: `rwctf{6ebfdb11-8e7f-493a-8bb2-d8623fd993bf}`.
 
 <div class="note">
 <b>Note:</b>
-The unintended solution and vuln has been found without CodeQL, but it was just too intriguing to not say "using CodeQL to find bugs in CodeQL" in the title and so I also show how to find the vuln using CodeQL.
+The unintended solution and vulnerability have been found without CodeQL, but it was just too intriguing to not say "using CodeQL to find bugs in CodeQL" in the title, and so I also show how to find the vulnerability using CodeQL.
 </div>
 
 For this challenge, we are given an executable `codeql_agent` and a `Dockerfile` that downloads the CodeQL bundle version 2.15.5.
@@ -33,7 +33,7 @@ If we open the binary in Ghidra, we are greeted with (Rust) pain:
 <img src="/assets/images/realworldctf-2024_rust_pain.png" alt="Unreadable decompiled Rust code" style="width: 100%;"/>
 
 So maybe let's just run it and see what it does.
-After starting the driver program we are first asked for our username.
+After starting the driver program, we are first asked for our username.
 Unfortunately, we cannot introduce any special characters into it and so this is not (unintentionally) exploitable.
 After that, we can ask the program to clone a given URL using `git clone`.
 So far, no reversing was actually needed, but as we were initially unable to clone a git repository we had to look at the Rust code...
@@ -49,9 +49,9 @@ And after clicking on the first XREF, we get this nice code:
 
 The code checks whether the url has at least 8 characters and starts with `http://`. The starts with check is implemented by XORing with `0x2f2f3a70` (which is equivalent to `//:p`) and `0x70747468` (which is equivalent to `ptth`).
 
-So a valid url would for example be http://internal.internal/foo.git.
+So a valid URL would, for example, be http://internal.internal/foo.git.
 
-After that, we can write arbitray CodeQL which is then executed as a query.
+After that, we can write arbitrary CodeQL which is then executed as a query.
 By either looking at the strings in Ghidra or by observing the started programs, we realize that CodeQL is started in a slightly unusual way:
 `codeql query run -d <DB_PATH> <QUERY_PATH> -J-Djavax.xml.accessExternalDTD=all`
 The JVM option `-Djavax.xml.accessExternalDTD=all` immediately hints towards the next step being to look at XML/XXE.
@@ -92,7 +92,7 @@ return unmarshaller.unmarshal(source, type).getValue();
 }
 ```
 
-The `javax.xml.bind.Unmarshaller` class is part of the Java API for XML Binding (JAXB) which is not vulnerable to XXE by default in newer versions [^name-hint] as far as I know. So if we run this simplified code that uses `javax.xml.bind.Unmarshaller` to parse an XML file with XXE, it will not work:
+The `javax.xml.bind.Unmarshaller` class is part of the Java API for XML Binding (JAXB), which is not vulnerable to XXE by default in newer versions [^name-hint], as far as I know. So if we run this simplified code that uses `javax.xml.bind.Unmarshaller` to parse an XML file with XXE, it will not work:
 
 ```java
 public class Main {
@@ -159,11 +159,11 @@ We knew that we had to find a place where CodeQL parsed XML and so we set out to
 
 #### Debugging
 
-As CodeQL is a nice, unobfuscated Java program, we just make a small project in IntelliJ and attach the CodeQL jar file as a library. This allows us to write code calling CodeQL methods but, more importantly, also **to use IntelliJs remote debugging feature for dynamic analysis**. To find all XML parsing locations, we then insert breakpoints at the JAXP entrypoints and run the program.
+As CodeQL is a nice, unobfuscated Java program, we just make a small project in IntelliJ and attach the CodeQL JAR file as a library. This allows us to write code calling CodeQL methods but, more importantly, also **to use IntelliJ's remote debugging feature for dynamic analysis**. To find all XML parsing locations, we then insert breakpoints at the JAXP entrypoints and run the program.
 
 #### JAXP
 
-Very soon a few breakpoints triggered — parsing the logback configuration included in the CodeQL jar file. Not exactly a prime target. Sadly, this was all we could gather at this stage, no other places jump out that parse XML using the JAXP entrypoints. But we also noticed another place parsing XML, even though it did not seem to hit the normal JAXB methods: The database statistics file (this file is used to improve join-ordering decisions). Unfortunately, it seems to be loaded from the integrated definitions within CodeQL and therefore not controllable by us.
+Very soon, a few breakpoints triggered—parsing the logback configuration included in the CodeQL JAR file. Not exactly a prime target. Sadly, this was all we could gather at this stage; no other places jumped out that parse XML using the JAXP entrypoints. But we also noticed another place parsing XML, even though it did not seem to hit the normal JAXB methods: The database statistics file (this file is used to improve join-ordering decisions). Unfortunately, it seems to be loaded from the integrated definitions within CodeQL and therefore not controllable by us.
 
 #### dbstats
 
@@ -216,8 +216,7 @@ Now that we have a CodeQL database, we can run the XXE query on it like this:
 codeql database analyze PATH_TO_DB PATH_TO_ql/java/ql/src/Security/CWE/CWE-611/XXE.ql --threat-model local --output=output.sarif --format=sarif-latest  --rerun
 ```
 
-The query will find only one result in the CodeQL source code:
-The `StAXXmlPopulator.java` file which is a false-positive, because all entities are only resolved to dummy values.
+The query will find only one result in the CodeQL source code: the `StAXXmlPopulator.java` file, which is a false-positive because all entities are only resolved to dummy values.
 
 So where is the XXE in the `StatisticsPersistence` class?
 
