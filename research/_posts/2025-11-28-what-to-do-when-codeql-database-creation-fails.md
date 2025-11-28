@@ -242,7 +242,7 @@ FROM base AS codeql
 WORKDIR /app
 
 RUN apt install -y unzip libstdc++-15-dev
-# Change to v2.23.5 (fixed) or v.23.3 (broken) to test different versions
+# Change to v2.23.5 (fixed) or v2.23.3 (broken) to test different versions
 RUN curl -LO "https://github.com/github/codeql-cli-binaries/releases/download/v2.23.3/codeql-linux64.zip"
 RUN unzip codeql-linux64.zip && rm codeql-linux64.zip
 
